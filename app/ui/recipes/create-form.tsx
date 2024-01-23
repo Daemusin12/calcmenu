@@ -3,6 +3,13 @@
 import { createRecipe } from '@/app/lib/actions';
 import React, { useState } from 'react';
 
+type RecipeType = {
+    name: string;
+    servings: string;
+    procedure: string;
+    ingredients: { name: string; quantity: string; unit: string }[];
+  };
+
 export default function Form() {
     const [recipe, setRecipe] = useState({
         name: '',
@@ -11,15 +18,15 @@ export default function Form() {
         ingredients: [{ name: '', quantity: '', unit: '' }],
     });
 
-    const handleInputChange = (e, index) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const { name, value } = e.target;
-        const updatedIngredients = [...recipe.ingredients];
+        const updatedIngredients: { [key: string]: string }[] = [...recipe.ingredients];
         updatedIngredients[index][name] = value;
 
         setRecipe((prevRecipe) => ({
             ...prevRecipe,
             ingredients: updatedIngredients,
-        }));
+          } as RecipeType));
     };
 
     const handleAddIngredient = () => {
@@ -29,7 +36,7 @@ export default function Form() {
         }));
     };
 
-    const handleRemoveIngredient = (index) => {
+    const handleRemoveIngredient = (index: number) => {
         const updatedIngredients = [...recipe.ingredients];
         updatedIngredients.splice(index, 1);
 
@@ -39,7 +46,7 @@ export default function Form() {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         
         try {

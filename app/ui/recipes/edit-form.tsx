@@ -3,7 +3,14 @@
 import { editRecipe } from '@/app/lib/actions';
 import { useState, useEffect } from 'react';
 
-export default function EditRecipeForm({ id, initialRecipe }) {
+type RecipeType = {
+    name: string;
+    servings: string;
+    procedure: string;
+    ingredients: { name: string; quantity: string; unit: string }[];
+  };
+
+export default function EditRecipeForm({ id, initialRecipe }: { id: any; initialRecipe: any }) {
     const [recipe, setRecipe] = useState({
         name: '',
         servings: '',
@@ -18,15 +25,15 @@ export default function EditRecipeForm({ id, initialRecipe }) {
         }
     }, [initialRecipe]);
 
-    const handleInputChange = (e, index) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const { name, value } = e.target;
-        const updatedIngredients = [...recipe.ingredients];
+        const updatedIngredients: { [key: string]: string }[] = [...recipe.ingredients];
         updatedIngredients[index][name] = value;
 
         setRecipe((prevRecipe) => ({
             ...prevRecipe,
             ingredients: updatedIngredients,
-        }));
+          } as RecipeType));
     };
 
     const handleAddIngredient = () => {
@@ -36,7 +43,7 @@ export default function EditRecipeForm({ id, initialRecipe }) {
         }));
     };
 
-    const handleRemoveIngredient = (index) => {
+    const handleRemoveIngredient = (index: number) => {
         const updatedIngredients = [...recipe.ingredients];
         updatedIngredients.splice(index, 1);
 
@@ -46,7 +53,7 @@ export default function EditRecipeForm({ id, initialRecipe }) {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         try {

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { Ingredient } from './definitions';
 
 const RecipeFormSchema = z.object({
     id: z.string(),
@@ -55,7 +56,7 @@ export async function createRecipe(data: any) {
 
         const insertedIngredients = await Promise.all(
             ingredients.map(
-                (ingredient) => sql`
+                (ingredient: Ingredient) => sql`
           INSERT INTO ingredients (recipe_id, name, unit, quantity)
           VALUES (${recipeId}, ${ingredient.name}, ${ingredient.unit}, ${ingredient.quantity});
         `,
@@ -109,7 +110,7 @@ export async function editRecipe(
 
         const insertedIngredients = await Promise.all(
             ingredients.map(
-                (ingredient) => sql`
+                (ingredient: Ingredient) => sql`
           INSERT INTO ingredients (recipe_id, name, unit, quantity)
           VALUES (${recipeId}, ${ingredient.name}, ${ingredient.unit}, ${ingredient.quantity});
         `,
