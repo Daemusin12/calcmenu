@@ -14,3 +14,9 @@ export type Ingredient = {
     date: string;
     ingredients: Ingredient[];
   };
+
+  export type RecipeField = {
+    name: string;
+    servings: number;
+    procedures: string;
+  };
