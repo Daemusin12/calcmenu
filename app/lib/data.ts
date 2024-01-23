@@ -97,3 +97,37 @@ export async function fetchRecipeById(id: string) {
     throw new Error('Failed to fetch recipe.');
   }
 }
+
+export async function fetchAllRecipes() {
+  noStore();
+
+  try {
+    const recipes = await sql<RecipeWithIngredients>`
+        SELECT
+          recipes.id,
+          recipes.name,
+          recipes.procedure,
+          recipes.servings,
+          recipes.date,
+          jsonb_agg(
+            jsonb_build_object(
+              'id', ingredients.id,
+              'recipe_id', ingredients.recipe_id,
+              'name', ingredients.name,
+              'unit', ingredients.unit,
+              'quantity', ingredients.quantity
+            )
+          ) AS ingredients
+        FROM recipes
+        LEFT JOIN ingredients ON recipes.id = ingredients.recipe_id
+        GROUP BY
+          recipes.id, recipes.name, recipes.procedure, recipes.servings, recipes.date
+        ORDER BY recipes.date DESC;
+      `;
+
+    return recipes.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch recipes.');
+  }
+}
